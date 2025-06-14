@@ -1,4 +1,3 @@
-import 'package:chat_app/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -27,11 +26,6 @@ class _SettingsPageState extends State<SettingsPage> {
           onPressed: () async {
             final auth = AuthService();
             await auth.signOut();
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => SignIn()),
-              (route) => false,
-            );
           },
           child: Text(
             'Sign Out',

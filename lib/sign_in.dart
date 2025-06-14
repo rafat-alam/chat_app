@@ -1,4 +1,3 @@
-import 'package:chat_app/home_page.dart';
 import 'package:chat_app/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,11 +41,6 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    bool go = FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser!.emailVerified;
-    if(go) {
-      return HomePage();
-    }
-
     return Scaffold(
       body: Center(
         child: Padding(
@@ -147,10 +141,6 @@ class _SignInState extends State<SignIn> {
                         );
                       },
                     );
-                  } else {
-                    setState(() {
-                      go = true;
-                    });
                   }
                 },
                 child: Text(

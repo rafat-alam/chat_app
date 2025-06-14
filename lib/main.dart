@@ -72,7 +72,68 @@ class _MyAppState extends State<MyApp> {
         ),
 
       ),
-      home: SignIn(),
+      home: AuthGate(),
+    );
+  }
+}
+
+class AuthStateService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  /// Stream that emits the current user and updates when:
+  /// - auth state changes (sign in/out)
+  /// - email is verified
+  Stream<User?> get authAndEmailVerifiedChanges async* {
+    // Yield current user initially
+    yield _auth.currentUser;
+
+    // Listen to auth state changes
+    await for (final user in _auth.authStateChanges()) {
+      yield user;
+
+      // If signed in, check for email verification every 3 seconds
+      if (user != null && !user.emailVerified) {
+        await for (final _ in Stream.periodic(Duration(seconds: 3))) {
+          await user.reload(); // reload user from Firebase
+          final refreshedUser = _auth.currentUser;
+
+          if (refreshedUser != null && refreshedUser.emailVerified) {
+            yield refreshedUser; // emit updated user
+            break; // stop checking
+          }
+        }
+      }
+    }
+  }
+}
+
+class AuthGate extends StatefulWidget {
+  const AuthGate({super.key});
+
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: AuthStateService().authAndEmailVerifiedChanges,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final user = snapshot.data;
+
+        if (user == null || user.emailVerified == false) {
+          return SignIn();
+        }
+
+        return HomePage();
+      },
     );
   }
 }
