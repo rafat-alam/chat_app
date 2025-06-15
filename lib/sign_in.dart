@@ -91,9 +91,17 @@ class _SignInState extends State<SignIn> {
                   try {
                     await FirebaseAuth.instance.sendPasswordResetEmail(email: eMailId.text);
                   } on FirebaseAuthException catch (e) {
-                    message = e.toString();
                     message = 'Please enter a valid email';
                   }
+                  // if(message == 'Password reset mail sent.') {
+                  //   try {
+                  //     await FirebaseAuth.instance.signInWithEmailAndPassword(email: eMailId.text, password: 'kk@12Akk');
+                  //   } on FirebaseAuthException catch (e) {
+                  //     if (e.code == 'user-not-found') {
+                  //       message = 'User not found.';
+                  //     }
+                  //   }
+                  // }
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
