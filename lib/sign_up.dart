@@ -53,8 +53,8 @@ class _SignUpState extends State<SignUp> {
       color: Color.fromRGBO(225, 225, 225, 1),
     ),
     borderRadius: BorderRadius.horizontal(
-      left: Radius.circular(50),
-      right: Radius.circular(50),
+      left: Radius.circular(15),
+      right: Radius.circular(15),
     ),
   );
 
@@ -121,63 +121,74 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(
                   height: 15,
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final auth = AuthService();
-                    final User? user = await auth.signUp(eMailId.text, pass.text);
-                    if(user != null && user.emailVerified == false) {
-                      await auth.sendEmailVerification();
-                    }
-                    if(user != null && user.emailVerified) {
-                      Navigator.of(context).pop();
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text(
-                              'E-Mail Used / Not Verified',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            content: Text(
-                              'E-Mail is aready used or Verification link has been sent to your Email. Please verify it.',
-                              // style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  'Ok',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final auth = AuthService();
+                      final User? user = await auth.signUp(eMailId.text, pass.text);
+                      if(user != null && user.emailVerified == false) {
+                        await auth.sendEmailVerification();
+                      }
+                      if(user != null && user.emailVerified) {
+                        Navigator.of(context).pop();
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(
+                                'E-Mail Used / Not Verified',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              content: Text(
+                                'E-Mail is aready used or Verification link has been sent to your Email. Please verify it.',
+                                // style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    'Ok',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  await auth.sendEmailVerification();
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  'Resend',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
+                                TextButton(
+                                  onPressed: () async {
+                                    await auth.sendEmailVerification();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    'Resend',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
-                  child: Text(
-                    'Sign Up',
-                    style: TextTheme.of(context).bodySmall,
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(15),
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 1,
+                    ),
+                    child: Text(
+                      'Sign Up',
+                      style: TextTheme.of(context).bodySmall,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -195,7 +206,11 @@ class _SignUpState extends State<SignUp> {
                       onTap: widget.onSwitch,
                       child: Text(
                         'Sign In',
-                        style: TextTheme.of(context).bodySmall,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],

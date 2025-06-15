@@ -51,8 +51,8 @@ class _SignInState extends State<SignIn> {
       color: Color.fromRGBO(225, 225, 225, 1),
     ),
     borderRadius: BorderRadius.horizontal(
-      left: Radius.circular(50),
-      right: Radius.circular(50),
+      left: Radius.circular(15),
+      right: Radius.circular(15),
     ),
   );
 
@@ -145,79 +145,100 @@ class _SignInState extends State<SignIn> {
                       ),
                     );
                   },
-                  child: Text(
-                    'Forgot Password ?',
-                    style: Theme.of(context).textTheme.bodySmall,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Forgot Password ?',
+                        
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   height: 15,
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final auth = AuthService();
-                    final User? user = await auth.signIn(eMailId.text, pass.text);
-                    var message = 'Successfully Login.';
-                    if(user == null) {
-                      message = 'Incorrect E-Mail or Password';
-                    } else if(user.emailVerified == false) {
-                      message = 'Please verify your Email';
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          message,
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final auth = AuthService();
+                      final User? user = await auth.signIn(eMailId.text, pass.text);
+                      var message = 'Successfully Login.';
+                      if(user == null) {
+                        message = 'Incorrect E-Mail or Password';
+                      } else if(user.emailVerified == false) {
+                        message = 'Please verify your Email';
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            message,
+                          ),
                         ),
-                      ),
-                    );
-                    if(user != null && user.emailVerified == false) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text(
-                              'Verification',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            content: Text(
-                              'Verification link has been sent to your Email. Please verify it.',
-                              // style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  'Ok',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  await auth.sendEmailVerification();
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  'Resend',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
                       );
-                    }
-                  },
-                  child: Text(
-                    'Sign In',
-                    style: TextTheme.of(context).bodySmall,
+                      if(user != null && user.emailVerified == false) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(
+                                'Verification',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              content: Text(
+                                'Verification link has been sent to your Email. Please verify it.',
+                                // style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    'Ok',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await auth.sendEmailVerification();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    'Resend',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(15),
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 1,
+                    ),
+                    child: Text(
+                      'Sign In',
+                      style: TextTheme.of(context).bodySmall,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -228,14 +249,18 @@ class _SignInState extends State<SignIn> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Not have an account? ',
+                      'Don\'t have an account? ',
                       style: TextTheme.of(context).labelLarge,
                     ),
                     GestureDetector(
                       onTap: widget.onSwitch,
                       child: Text(
                         'Register',
-                        style: TextTheme.of(context).bodySmall,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
