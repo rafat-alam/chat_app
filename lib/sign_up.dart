@@ -49,7 +49,6 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
