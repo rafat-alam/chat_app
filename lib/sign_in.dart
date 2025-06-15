@@ -1,4 +1,3 @@
-import 'package:chat_app/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -92,6 +91,7 @@ class _SignInState extends State<SignIn> {
                   try {
                     await FirebaseAuth.instance.sendPasswordResetEmail(email: eMailId.text);
                   } on FirebaseAuthException catch (e) {
+                    message = e.toString();
                     message = 'Please enter a valid email';
                   }
                   ScaffoldMessenger.of(context).showSnackBar(
