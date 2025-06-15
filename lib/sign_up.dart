@@ -66,7 +66,7 @@ class _SignUpState extends State<SignUp> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/img/img2.avif'),
+                image: AssetImage('assets/img/img4.jpg'),
                 fit: BoxFit.cover,
               ),
             ),

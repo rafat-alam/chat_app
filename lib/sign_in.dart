@@ -64,7 +64,7 @@ class _SignInState extends State<SignIn> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/img/img2.avif'),
+                image: AssetImage('assets/img/img4.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
