@@ -43,8 +43,20 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
 
+  bool _obscureText = true;
+  
   final TextEditingController eMailId = TextEditingController();
   final TextEditingController pass = TextEditingController();
+
+  final border = OutlineInputBorder(
+    borderSide: BorderSide(
+      color: Color.fromRGBO(225, 225, 225, 1),
+    ),
+    borderRadius: BorderRadius.horizontal(
+      left: Radius.circular(50),
+      right: Radius.circular(50),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -60,33 +72,49 @@ class _SignUpState extends State<SignUp> {
                 style: TextTheme.of(context).titleLarge,
               ),
               SizedBox(
-                height: 10,
+                height: 30,
               ),
               TextField(
                 maxLines: 1,
                 controller: eMailId,
                 decoration: InputDecoration(
                   hintText: 'Email ID',
-                  border: OutlineInputBorder(
-
-                  ),
+                  border: border,
+                  enabledBorder: border,
+                  focusedBorder: border,
+                  prefixIcon: Icon(
+                    Icons.email
+                  )
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 15,
               ),
-              TextField(
-                maxLines: 1,
+              TextFormField(
                 controller: pass,
+                obscureText: _obscureText,
                 decoration: InputDecoration(
                   hintText: 'Password',
-                  border: OutlineInputBorder(
-
+                  border: border,
+                  enabledBorder: border,
+                  focusedBorder: border,
+                  prefixIcon: Icon(
+                    Icons.password
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
                   ),
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 15,
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -148,7 +176,7 @@ class _SignUpState extends State<SignUp> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 15,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
