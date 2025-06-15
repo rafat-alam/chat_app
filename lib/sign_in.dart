@@ -56,6 +56,16 @@ class _SignInState extends State<SignIn> {
     ),
   );
 
+  
+  bool isValidEmail(String email) {
+    final RegExp emailRegex = RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
+
+  var eMailText = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,8 +110,19 @@ class _SignInState extends State<SignIn> {
                         )
                       ),
                     ),
+                    Row(
+                      children: [
+                        Text(
+                          eMailText,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(
-                      height: 15,
+                      height: 5,
                     ),
                     TextFormField(
                       controller: pass,
@@ -126,17 +147,35 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 15,
+                    Row(
+                      children: [
+                        Text(
+                          '',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
                     ),
                     GestureDetector(
                       onTap: () async {
+                        if(isValidEmail(eMailId.text) == false) {
+                          setState(() {
+                            eMailText = 'Invalid E-Mail ID';
+                          });
+                          return;
+                        } else {
+                          setState(() {
+                            eMailText = '';
+                          });
+                        }
                         var message = 'Password reset mail sent.';
                         try {
                           await FirebaseAuth.instance.sendPasswordResetEmail(email: eMailId.text);
                         } on FirebaseAuthException catch (e) {
                           message = e.toString();
-                          message = 'Please enter a valid email';
+                          message = 'This E-Mail is not registered with us.';
                         }
                         // if(message == 'Password reset mail sent.') {
                         //   try {
@@ -177,6 +216,16 @@ class _SignInState extends State<SignIn> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
+                          if(isValidEmail(eMailId.text) == false) {
+                            setState(() {
+                              eMailText = 'Invalid E-Mail ID';
+                            });
+                            return;
+                          } else {
+                            setState(() {
+                              eMailText = '';
+                            });
+                          }
                           final auth = AuthService();
                           final User? user = await auth.signIn(eMailId.text, pass.text);
                           var message = 'Successfully Login.';

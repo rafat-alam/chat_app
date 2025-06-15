@@ -214,8 +214,26 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ],
                     ),
+                    GestureDetector(
+                      onTap: () async {
+                        
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            '',
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     SizedBox(
-                      height: 5,
+                      height: 15,
                     ),
                     SizedBox(
                       width: double.infinity,
