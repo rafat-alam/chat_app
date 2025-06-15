@@ -1,5 +1,6 @@
 import 'package:chat_app/home_page.dart';
 import 'package:chat_app/sign_in.dart';
+import 'package:chat_app/sign_up.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -81,25 +82,22 @@ class AuthStateService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   /// Stream that emits the current user and updates when:
-  /// - auth state changes (sign in/out)
-  /// - email is verified
+  /// - Auth state changes (sign in/out)
+  /// - Email is verified
   Stream<User?> get authAndEmailVerifiedChanges async* {
-    // Yield current user initially
     yield _auth.currentUser;
 
-    // Listen to auth state changes
     await for (final user in _auth.authStateChanges()) {
       yield user;
 
-      // If signed in, check for email verification every 3 seconds
       if (user != null && !user.emailVerified) {
         await for (final _ in Stream.periodic(Duration(seconds: 3))) {
-          await user.reload(); // reload user from Firebase
+          await user.reload();
           final refreshedUser = _auth.currentUser;
 
           if (refreshedUser != null && refreshedUser.emailVerified) {
-            yield refreshedUser; // emit updated user
-            break; // stop checking
+            yield refreshedUser;
+            break;
           }
         }
       }
@@ -118,22 +116,47 @@ class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: AuthStateService().authAndEmailVerifiedChanges,
+      stream: AuthStateService().authAndEmailVerifiedChanges
+          .distinct((a, b) => a?.uid == b?.uid && a?.emailVerified == b?.emailVerified),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
+          return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
         final user = snapshot.data;
 
-        if (user == null || user.emailVerified == false) {
-          return SignIn();
+        if (user == null || !user.emailVerified) {
+          return const AuthScreen();
         }
 
-        return HomePage();
+        return const HomePage();
       },
     );
+  }
+}
+
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  bool showSignIn = true;
+
+  void toggle() {
+    setState(() {
+      showSignIn = !showSignIn;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return showSignIn
+        ? SignIn(onSwitch: toggle)
+        : SignUp(onSwitch: toggle);
   }
 }

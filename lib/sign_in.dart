@@ -28,7 +28,12 @@ class AuthService {
 }
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  final VoidCallback onSwitch;
+
+  const SignIn({
+    super.key,
+    required this.onSwitch,
+  });
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -76,6 +81,30 @@ class _SignInState extends State<SignIn> {
                    border: OutlineInputBorder(
 
                   ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              GestureDetector(
+                onTap: () async {
+                  var message = 'Password reset mail sent.';
+                  try {
+                    await FirebaseAuth.instance.sendPasswordResetEmail(email: eMailId.text);
+                  } on FirebaseAuthException catch (e) {
+                    message = 'Please enter a valid email';
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        message,
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Forgot Password ?',
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
               SizedBox(
@@ -159,13 +188,7 @@ class _SignInState extends State<SignIn> {
                     style: TextTheme.of(context).labelLarge,
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SignUp(),
-                        )
-                      );
-                    },
+                    onTap: widget.onSwitch,
                     child: Text(
                       'Register',
                       style: TextTheme.of(context).bodySmall,

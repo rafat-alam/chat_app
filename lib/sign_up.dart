@@ -1,3 +1,4 @@
+import 'package:chat_app/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -30,7 +31,12 @@ class AuthService {
 }
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+  final VoidCallback onSwitch;
+
+  const SignUp({
+    super.key,
+    required this.onSwitch,
+  });
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -145,6 +151,22 @@ class _SignUpState extends State<SignUp> {
               ),
               SizedBox(
                 height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Already have an account? ',
+                    style: TextTheme.of(context).labelLarge,
+                  ),
+                  GestureDetector(
+                    onTap: widget.onSwitch,
+                    child: Text(
+                      'Sign In',
+                      style: TextTheme.of(context).bodySmall,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
