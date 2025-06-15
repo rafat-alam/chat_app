@@ -164,35 +164,34 @@ class _SignInState extends State<SignIn> {
                           setState(() {
                             eMailText = 'Invalid E-Mail ID';
                           });
-                          return;
                         } else {
                           setState(() {
                             eMailText = '';
                           });
-                        }
-                        var message = 'Password reset mail sent.';
-                        try {
-                          await FirebaseAuth.instance.sendPasswordResetEmail(email: eMailId.text);
-                        } on FirebaseAuthException catch (e) {
-                          message = e.toString();
-                          message = 'This E-Mail is not registered with us.';
-                        }
-                        // if(message == 'Password reset mail sent.') {
-                        //   try {
-                        //     await FirebaseAuth.instance.signInWithEmailAndPassword(email: eMailId.text, password: 'kk@12Akk');
-                        //   } on FirebaseAuthException catch (e) {
-                        //     if (e.code == 'user-not-found') {
-                        //       message = 'User not found.';
-                        //     }
-                        //   }
-                        // }
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              message,
+                          var message = 'Password reset mail sent.';
+                          try {
+                            await FirebaseAuth.instance.sendPasswordResetEmail(email: eMailId.text);
+                          } on FirebaseAuthException catch (e) {
+                            message = e.toString();
+                            message = 'This E-Mail is not registered with us.';
+                          }
+                          // if(message == 'Password reset mail sent.') {
+                          //   try {
+                          //     await FirebaseAuth.instance.signInWithEmailAndPassword(email: eMailId.text, password: 'kk@12Akk');
+                          //   } on FirebaseAuthException catch (e) {
+                          //     if (e.code == 'user-not-found') {
+                          //       message = 'User not found.';
+                          //     }
+                          //   }
+                          // }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                message,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -220,70 +219,69 @@ class _SignInState extends State<SignIn> {
                             setState(() {
                               eMailText = 'Invalid E-Mail ID';
                             });
-                            return;
                           } else {
                             setState(() {
                               eMailText = '';
                             });
-                          }
-                          final auth = AuthService();
-                          final User? user = await auth.signIn(eMailId.text, pass.text);
-                          var message = 'Successfully Login.';
-                          if(user == null) {
-                            message = 'Incorrect E-Mail or Password';
-                          } else if(user.emailVerified == false) {
-                            message = 'Please verify your Email';
-                          }
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                message,
+                            final auth = AuthService();
+                            final User? user = await auth.signIn(eMailId.text, pass.text);
+                            var message = 'Successfully Login.';
+                            if(user == null) {
+                              message = 'Incorrect E-Mail or Password';
+                            } else if(user.emailVerified == false) {
+                              message = 'Please verify your Email';
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  message,
+                                ),
                               ),
-                            ),
-                          );
-                          if(user != null && user.emailVerified == false) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text(
-                                    'Verification',
-                                    style: Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  content: Text(
-                                    'Verification link has been sent to your Email. Please verify it.',
-                                    // style: Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                        'Ok',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue,
-                                        ),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        await auth.sendEmailVerification();
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                        'Resend',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
                             );
+                            if(user != null && user.emailVerified == false) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text(
+                                      'Verification',
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    content: Text(
+                                      'Verification link has been sent to your Email. Please verify it.',
+                                      // style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          'Ok',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          await auth.sendEmailVerification();
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          'Resend',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

@@ -257,95 +257,94 @@ class _SignUpState extends State<SignUp> {
                               passText = '';
                             });
                           }
-                          if(isValidEmail(eMailId.text) == false || isValidPassword(pass.text) == false) {
-                            return;
-                          }
-                          final auth = AuthService();
-                          var user = await auth.signUp(eMailId.text, pass.text);
-                          if(user == null) {
-                            user = await auth.signIn(eMailId.text, pass.text);
-                            if(user != null && user.emailVerified) {
-                              user = null;
-                            }
-                          }
-                          if(user != null && user.emailVerified == false) {
-                            await auth.sendEmailVerification();
-                          }
-                          var dialogTitle = 'Verification';
-                          var dialogBody = 'Verification mail has been sent to your respected E-Mail address';
-                          if(user == null) {
-                            dialogTitle = 'E-Mail Used';
-                            dialogBody = 'E-Mail used, we have an account with this E-Mail ID. Try to Sign In';
-                          }
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              if(dialogTitle == 'Verification') {
-                                return AlertDialog(
-                                  title: Text(
-                                    dialogTitle,
-                                    style: Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  content: Text(
-                                    dialogBody,
-                                    // style: Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                        'Ok',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue,
-                                        ),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        await auth.sendEmailVerification();
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                        'Resend',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return AlertDialog(
-                                  title: Text(
-                                    dialogTitle,
-                                    style: Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  content: Text(
-                                    dialogBody,
-                                    // style: Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                        'Ok',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
+                          if(!(isValidEmail(eMailId.text) == false || isValidPassword(pass.text) == false)) {
+                            final auth = AuthService();
+                            var user = await auth.signUp(eMailId.text, pass.text);
+                            if(user == null) {
+                              user = await auth.signIn(eMailId.text, pass.text);
+                              if(user != null && user.emailVerified) {
+                                user = null;
                               }
-                            },
-                          );
+                            }
+                            if(user != null && user.emailVerified == false) {
+                              await auth.sendEmailVerification();
+                            }
+                            var dialogTitle = 'Verification';
+                            var dialogBody = 'Verification mail has been sent to your respected E-Mail address';
+                            if(user == null) {
+                              dialogTitle = 'E-Mail Used';
+                              dialogBody = 'E-Mail used, we have an account with this E-Mail ID. Try to Sign In';
+                            }
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                if(dialogTitle == 'Verification') {
+                                  return AlertDialog(
+                                    title: Text(
+                                      dialogTitle,
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    content: Text(
+                                      dialogBody,
+                                      // style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          'Ok',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          await auth.sendEmailVerification();
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          'Resend',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return AlertDialog(
+                                    title: Text(
+                                      dialogTitle,
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    content: Text(
+                                      dialogBody,
+                                      // style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          'Ok',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.all(15),
