@@ -16,7 +16,20 @@ class AuthService {
       return null;
     }
   }
-
+  
+  // Sign in
+  Future<User?> signIn(String email, String password) async {
+    try {
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password
+      );
+      return result.user;
+    } catch (e) {
+      return null;
+    }
+  }
+  
   // Verification Mail
   Future<void> sendEmailVerification() async {
     final user = _auth.currentUser;
@@ -136,23 +149,33 @@ class _SignUpState extends State<SignUp> {
                       child: ElevatedButton(
                         onPressed: () async {
                           final auth = AuthService();
-                          final User? user = await auth.signUp(eMailId.text, pass.text);
+                          var user = await auth.signUp(eMailId.text, pass.text);
+                          if(user == null) {
+                            user = await auth.signIn(eMailId.text, pass.text);
+                            if(user != null && user.emailVerified) {
+                              user = null;
+                            }
+                          }
                           if(user != null && user.emailVerified == false) {
                             await auth.sendEmailVerification();
                           }
-                          if(user != null && user.emailVerified) {
-                            Navigator.of(context).pop();
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
+                          var dialogTitle = 'Verification';
+                          var dialogBody = 'Verification mail has been sent to your respected E-Mail address';
+                          if(user == null) {
+                            dialogTitle = 'E-Mail Used';
+                            dialogBody = 'E-Mail used, we have an account with this E-Mail ID. Try to Sign In';
+                          }
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              if(dialogTitle == 'Verification') {
                                 return AlertDialog(
                                   title: Text(
-                                    'E-Mail Used / Not Verified',
+                                    dialogTitle,
                                     style: Theme.of(context).textTheme.titleMedium,
                                   ),
                                   content: Text(
-                                    'E-Mail is aready used or Verification link has been sent to your Email. Please verify it.',
+                                    dialogBody,
                                     // style: Theme.of(context).textTheme.titleMedium,
                                   ),
                                   actions: [
@@ -183,9 +206,34 @@ class _SignUpState extends State<SignUp> {
                                     ),
                                   ],
                                 );
-                              },
-                            );
-                          }
+                              } else {
+                                return AlertDialog(
+                                  title: Text(
+                                    dialogTitle,
+                                    style: Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  content: Text(
+                                    dialogBody,
+                                    // style: Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text(
+                                        'Ok',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.all(15),
