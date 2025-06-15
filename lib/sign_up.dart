@@ -71,6 +71,57 @@ class _SignUpState extends State<SignUp> {
     ),
   );
 
+  bool isValidEmail(String email) {
+    final RegExp emailRegex = RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
+
+  bool isValidPassword(String password) {
+    // Length check
+    if (password.length < 8 || password.length > 30) return false;
+
+    // Regex pattern checks
+    final hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
+    final hasLowercase = RegExp(r'[a-z]').hasMatch(password);
+    final hasDigit = RegExp(r'\d').hasMatch(password);
+    final hasSpecialChar = RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(password);
+
+    return hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
+  }
+
+  String getPasswordValidationMessage(String password) {
+    if (password.length < 8) {
+      return "Password must be at least 8 characters long.";
+    }
+
+    if (password.length > 30) {
+      return "Password must not exceed 30 characters.";
+    }
+
+    if (!RegExp(r'[A-Z]').hasMatch(password)) {
+      return "Password must contain at least one uppercase letter.";
+    }
+
+    if (!RegExp(r'[a-z]').hasMatch(password)) {
+      return "Password must contain at least one lowercase letter.";
+    }
+
+    if (!RegExp(r'\d').hasMatch(password)) {
+      return "Password must contain at least one number.";
+    }
+
+    if (!RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(password)) {
+      return "Password must contain at least one special character.";
+    }
+
+    return "Valid password.";
+  }
+
+  var eMailText = '';
+  var passText = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,8 +166,19 @@ class _SignUpState extends State<SignUp> {
                         )
                       ),
                     ),
+                    Row(
+                      children: [
+                        Text(
+                          eMailText,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(
-                      height: 15,
+                      height: 5,
                     ),
                     TextFormField(
                       controller: pass,
@@ -141,13 +203,45 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                     ),
+                    Row(
+                      children: [
+                        Text(
+                          passText,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(
-                      height: 15,
+                      height: 5,
                     ),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
+                          if(isValidEmail(eMailId.text) == false) {
+                            setState(() {
+                              eMailText = 'Invalid E-Mail ID';
+                            });
+                          } else {
+                            setState(() {
+                              eMailText = '';
+                            });
+                          }
+                          if(isValidPassword(pass.text) == false) {
+                            setState(() {
+                              passText = getPasswordValidationMessage(pass.text);
+                            });
+                          } else {
+                            setState(() {
+                              passText = '';
+                            });
+                          }
+                          if(isValidEmail(eMailId.text) == false || isValidPassword(pass.text) == false) {
+                            return;
+                          }
                           final auth = AuthService();
                           var user = await auth.signUp(eMailId.text, pass.text);
                           if(user == null) {
