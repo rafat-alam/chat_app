@@ -266,8 +266,16 @@ class _SignInState extends State<SignIn> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          await auth.sendEmailVerification();
-                                          Navigator.of(context).pop();
+                                          try {
+                                            await auth.sendEmailVerification();
+                                            Navigator.of(context).pop();
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('Try again later. Email already sent recently.'),
+                                              ),
+                                            );
+                                          }
                                         },
                                         child: Text(
                                           'Resend',
