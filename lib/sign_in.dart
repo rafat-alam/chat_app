@@ -308,7 +308,7 @@ class _SignInState extends State<SignIn> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: SizedBox()
+                      child: SizedBox(),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
